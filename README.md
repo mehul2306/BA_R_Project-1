@@ -12,5 +12,5 @@
 ### 1. Compute the minimum, maximum, mean, median, and standard deviation for each of the numeric variables using data.table package. Which variable(s) has the largest variability? Explain your answer.
 ### 2. Create boxplots for each of the numeric variables. Are there any extreme values for any of the variables? Which ones? Explain your answer.
 ### 3. Create a heatmap for the numeric variables. Discuss any interesting trend you see in this chart.
-### 4. Run principal component analysis using unscaled numeric variables in the dataset. How do you interpret the results from this model?
-### 5. Next, run principal component model after scaling the numeric variables. Did the results/interpretations change? How so? Explain your answers.
+### 4. Run principal component analysis using unscaled numeric variables in the dataset. How do we interpret the results from this model?
+### 5. Next, run principal component model after scaling the numeric variables. Did the results/interpretations change and how ?.
