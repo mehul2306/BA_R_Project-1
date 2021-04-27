@@ -1,0 +1,130 @@
+---
+title: "Project_1"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r loadPackages, warning=FALSE, messages = 'hide'}
+library(data.table)
+pacman::p_load(forecast, tidyverse, gplots, GGally, mosaic,
+               scales, mosaic, mapproj, mlbench, data.table)
+```
+
+
+```{r importdata }
+utilities <- fread("Utilities.csv")
+utilities.dt <- data.table(utilities)
+utilities.df <- setDF(utilities)
+
+#summary(utilities.df)
+#apply(utilities.df, 2, sd)
+my_stat<- function(){
+  minimum<- c()
+  maximum<- c()
+  mean<- c()
+  median <- c()
+  standard_daviation <- c()
+  #print(utilities.dt)
+  for(i in 2:ncol(utilities.df)){
+    minimum <- c(minimum,min(utilities.df[,i]))
+    maximum <- c(maximum,max(utilities.df[,i]))
+    mean <- c(mean,mean(utilities.df[,i]))
+    median <- c(median,median(utilities.df[,i]))
+    standard_daviation <- c(standard_daviation,sd(utilities.df[,i]))
+  }
+  my_stats_matrix <- matrix(c(minimum, maximum, mean, median, standard_daviation), nrow = 5, ncol = 8, byrow = TRUE)
+  colnames(my_stats_matrix) <- c("Fixed_Charge", "RoR", "Cost", "Load_factor", "Demand_growth", "Sales", "Nuclear", "Fuel_Cost")
+  rownames(my_stats_matrix)<-(c("Minimum", "Maximum", "Mean", "Median", "Std. Dav."))
+  print(round(my_stats_matrix,2))
+  scaled <- scale(my_stats_matrix)
+  print(round(scaled,2))
+  
+}
+my_stat()
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+ggplot(utilities.df) +
+  geom_boxplot(aes(, y = Fixed_charge), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Fixed Charge") + ggtitle("Where are the Outliers?") 
+ 
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = RoR), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("RoR") + ggtitle(" Boxplot for RoR") 
+
+ 
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = Cost), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Cost") + ggtitle(" Boxplot for Cost") 
+
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = Load_factor), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Load factor") + ggtitle(" Boxplot for Load_factor") 
+
+
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = Demand_growth), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Demand Growth") + ggtitle(" Boxplot for Demand_growth")
+
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = Sales), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Sales") + ggtitle(" Boxplot for Sales")
+
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = Nuclear), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Nuclear") + ggtitle(" Boxplot for Nuclear")
+
+
+ggplot(utilities.df) +
+ geom_boxplot(aes(, y = Fuel_Cost), 
+               fill = "gold1", outlier.color = "firebrick2") + 
+  ylab("Fuel_Cost") + ggtitle(" Boxplot for Fuel_Cost")
+```
+```{r}
+heatmap(cor(utilities.dt[,!c("Company")]), Rowv = NA, Colv = NA)
+library(reshape)
+cor.mat <- round(cor(utilities.dt[,!c("Company")]),2)
+melted.cor.mat <- melt(cor.mat)
+ggplot(melted.cor.mat, aes(x = X1, y = X2, fill = value)) + 
+  scale_fill_gradient(low="wheat", high="orangered") +
+  geom_tile() + 
+  geom_text(aes(x = X1, y = X2, label = value)) +
+  ggtitle("Utilities heat map")
+```
+```{r PCA}
+# question no 4
+
+pcs <- prcomp(utilities.dt[,!c("Company")]) 
+summary(pcs) 
+pcs$rot
+
+#question no 5
+```
+``` {r question 5}
+### PCA using Normalized variables
+pcs.cor <- prcomp(utilities.dt[,!c("Company")], scale. = T)
+summary(pcs.cor)
+pcs.cor$rot
+# 
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
